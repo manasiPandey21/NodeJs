@@ -1,37 +1,12 @@
-const express = require('express');
-const path = require('path');
-const app = express();
-const publicpath = path.join(__dirname, 'public');
-const viewsPath = path.join(__dirname, 'views'); // Assuming 'profile.ejs' is in the 'views' directory
-
-app.set('view engine', 'ejs');
-app.set('views', viewsPath); // Set the views directory to the correct path
-
-app.get('', (_, resp) => {
-    resp.sendFile(`${publicpath}/index.html`);
-});
-
-app.get('/about', (_, resp) => {
-    resp.sendFile(`${publicpath}/about.html`);
-});
-
-app.get('/help', (_, resp) => {
-    resp.sendFile(`${publicpath}/help.html`);
-});
-
-app.get('/profile', (_, resp) => {
-    const User = {
-        name: 'Manasi',
-        age: 19
-    };
-    // Render the 'profile' template with the User data
-    resp.render('profile', { User });
-});
-
-app.get('*', (_, resp) => {
-    resp.sendFile(`${publicpath}/nopage.html`);
-});
-
-app.listen(5000, () => {
-    console.log('Server is running on http://localhost:5000');
-});
+const {MongoClient, Collection}=require('mongodb')
+const url = 'mongodb://127.0.0.1:27017';
+const client=new MongoClient(url);
+const database='e-comm'
+async function getData(){
+    let result=await client.connect();
+    let db=result.db(database);
+    let collection=db.collection('products');
+    let response=await collection.find({}).toArray();
+    console.log(response);
+}
+getData();
